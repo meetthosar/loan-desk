@@ -1,0 +1,4 @@
+# Hand labels for judge calibration (plan: label 20 cases yourself).
+# Read each reply in an eval report, decide if it is faithful, and add a line:
+# - {id: emi-001, faithful: true}
+[]

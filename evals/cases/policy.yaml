@@ -1,0 +1,18 @@
+# General policy questions (no account data). Not part of the 60-case gate; run with
+# `loandesk eval run --cases policy`. These are what the answer cache serves.
+- id: pol-001
+  phone: "+919000000001"
+  turns: ["What is the late payment charge?"]
+  expect: {intent: policy_question, handoff: false, forbidden_tools: [create_zendesk_ticket]}
+- id: pol-002
+  phone: "+919000000002"
+  turns: ["Is there a fee for closing a loan early?"]
+  expect: {handoff: false}
+- id: pol-003
+  phone: "+919000000003"
+  turns: ["What are the timings when a recovery agent can visit?"]
+  expect: {intent: policy_question, handoff: false}
+- id: pol-004
+  phone: "+919000000004"
+  turns: ["How long do you keep my chat messages?"]
+  expect: {intent: policy_question, handoff: false}

@@ -1,0 +1,48 @@
+# Every model is an exact OpenRouter slug. Changing a line here (and LOANDESK_PROMPT_VERSION)
+# is the whole rollback procedure. Check slugs and prices with: loandesk models check
+
+roles:
+  router: anthropic/claude-haiku-5.5      # sorts the intent; small and cheap
+  responder: anthropic/claude-sonnet-5.5  # calls tools and writes the reply
+  judge: deepseek/deepseek-v4-pro         # scores replies in evals; never changes during experiments
+
+# Layer 5: send only the hard intents to the strong responder, the rest to a cheap one.
+routing:
+  enabled: false
+  cheap_responder: anthropic/claude-haiku-5.5
+  strong_intents: [complaint, foreclosure_quote]
+
+# Layer 5: Anthropic prompt caching on the static system prompt (other providers cache automatically).
+prompt_caching: false
+
+# Layer 5: cache answers to general policy questions.
+answer_cache:
+  enabled: false
+  ttl_seconds: 86400
+
+# Candidates for `loandesk experiment models`. Each runs as both router and responder.
+matrix:
+  claude: anthropic/claude-sonnet-5.5
+  gpt: openai/gpt-5.6-terra
+  open_weight: qwen/qwen3.8-27b
+  cheap: google/gemini-3.5-flash-lite
+
+# Added to every request. Reasoning models (GPT-5.x, Qwen 3.8, Gemini 3) spend hidden
+# reasoning tokens out of max_tokens; low effort keeps replies fast and the budget intact.
+# Models without reasoning ignore it.
+request_defaults:
+  reasoning: {effort: low}
+
+# Pin the provider so a comparison is not silently served by a different host.
+# Example: "qwen/qwen3.8-27b": {order: ["DeepInfra"], allow_fallbacks: false}
+providers: {}
+
+# Used only to estimate cost before a run; the ledger records what was actually charged.
+estimate:
+  input_tokens_per_case: 9000
+  output_tokens_per_case: 700
+  judge_input_tokens_per_case: 2500
+  judge_output_tokens_per_case: 150
+
+handoff:
+  min_confidence: 0.75  # logged and tuned against the eval set; see docs/04-blueprint.md

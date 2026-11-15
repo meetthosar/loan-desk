@@ -1,0 +1,42 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --frozen
+      - run: uv run ruff check src tests
+      - run: uv run pytest
+
+  # The release gate: the 60 cases on every pull request. Needs the OPENROUTER_API_KEY
+  # secret; use a separate key with its own spend limit, because the local ledger does
+  # not exist in CI. About $0.55 per run on the seed cases, $1.65 on all 60.
+  evals:
+    needs: test
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      LOANDESK_BUDGET_USD: "3"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --frozen
+      - name: Skip without a key
+        if: env.OPENROUTER_API_KEY == ''
+        run: echo "OPENROUTER_API_KEY secret not set; skipping evals." && exit 0
+      - name: Eval gate
+        if: env.OPENROUTER_API_KEY != ''
+        run: uv run loandesk eval run --cases all --gate --yes
+      - uses: actions/upload-artifact@v4
+        if: always() && env.OPENROUTER_API_KEY != ''
+        with:
+          name: eval-report
+          path: evals/reports/

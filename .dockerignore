@@ -1,0 +1,6 @@
+.venv
+.loandesk
+.git
+.env
+evals/reports
+**/__pycache__

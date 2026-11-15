@@ -1,0 +1,74 @@
+# Intent map: 10 example borrower messages per intent, English and Hinglish (Layer 1).
+# Used by `loandesk experiment simulate` and summarised in docs/02-intent-map.md.
+emi_due_date:
+  - When is my next EMI due?
+  - How much is my EMI this month?
+  - What date do I have to pay my installment?
+  - How many EMIs are left?
+  - Is my EMI due this week?
+  - Agli EMI kab hai?
+  - Meri kist kitni hai aur kab deni hai?
+  - Is mahine ki EMI ki date kya hai?
+  - Kitni EMI baaki hai?
+  - EMI amount batao please
+failed_payment:
+  - My EMI payment failed, why?
+  - The auto debit did not happen this month
+  - I paid by UPI but it is showing pending
+  - Money got deducted but EMI shows unpaid
+  - Why is my loan showing overdue?
+  - Mera NACH fail ho gaya, ab kya karu?
+  - Payment fail kyu hua?
+  - UPI se pay kiya par pending dikha raha hai
+  - Bank se paisa kat gaya lekin EMI jama nahi hui
+  - Bounce charge lagega kya?
+foreclosure_quote:
+  - I want to close my loan, how much do I pay?
+  - What is my foreclosure amount today?
+  - Can I prepay my loan? What will it cost?
+  - How much to close the loan on the 30th?
+  - Is there any charge for closing early?
+  - Loan band karna hai, kitna dena padega?
+  - Poora loan ek saath bharna hai
+  - Foreclosure amount batao
+  - Jaldi loan khatam karna hai, kitna lagega?
+  - Agle hafte loan close kar sakti hu kya?
+contact_update:
+  - I want to change my mobile number
+  - Please update my email address
+  - My number has changed, how do I update it?
+  - I lost my SIM, how do I change my registered number?
+  - Change my phone number to the new one
+  - Mobile number badalna hai
+  - Naya number update karna hai
+  - Email change kar do
+  - Registered number kaise badle?
+  - Mera purana number band ho gaya
+complaint:
+  - The field officer came to my house late at night
+  - The agent was rude to me
+  - I want to complain about wrong charges
+  - Nobody at the branch answers my calls
+  - The recovery agent told my neighbours about my loan
+  - Agent ne mujhse badtameezi ki
+  - Mujhe shikayat karni hai
+  - Field officer raat ko ghar aaya tha
+  - Galat charge lagaya hai, complaint karni hai
+  - Meri pichli complaint ka kya hua?
+policy_question:
+  - What is the late payment charge?
+  - Is there a fee for closing a loan early?
+  - What time can a recovery agent visit?
+  - How do I complain to the RBI ombudsman?
+  - Do you charge for a failed NACH?
+  - Late fee kitni hai?
+  - Agent kitne baje tak aa sakta hai?
+  - Processing fee kitni hai?
+  - Interest kaise calculate hota hai?
+  - Kya aap mera data bechte ho?
+out_of_scope:
+  - Which stock should I buy?
+  - What is the weather today?
+  - Can you write my son's homework?
+  - Tell me a joke
+  - Mujhe naya phone kaunsa lena chahiye?

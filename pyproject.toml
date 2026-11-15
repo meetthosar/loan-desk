@@ -1,0 +1,63 @@
+[project]
+name = "loandesk"
+version = "0.1.0"
+description = "LoanDesk: a customer support agent for a fictional Indian microfinance lender"
+readme = "README.md"
+authors = [
+    { name = "Meet Thosar", email = "meetthosar@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "chromadb>=1.5.9",
+    "cryptography>=50.0.2",
+    "faker>=40.54.0",
+    "fastapi>=0.162.5",
+    "fastembed>=0.9.1",
+    "httpx>=0.28.1",
+    "langgraph>=1.2.21",
+    "langgraph-checkpoint-postgres>=3.2.0",
+    "numpy>=2.5.4",
+    "openai>=3.50.0",
+    "pgvector>=0.5.1",
+    "pinecone>=10.3.0",
+    "psycopg[binary]>=3.3.9",
+    "pydantic>=2.14.3",
+    "pydantic-settings>=2.16.3",
+    "pyjwt>=2.15.1",
+    "pyyaml>=6.0.3",
+    "qdrant-client>=1.20.0",
+    "rich>=15.0.0",
+    "sqlalchemy>=2.1.8",
+    "typer>=0.29.1",
+    "uvicorn[standard]>=0.54.0",
+]
+
+[project.scripts]
+loandesk = "loandesk.cli:app"
+
+[build-system]
+requires = ["uv_build>=0.11.31,<0.12.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+    "pytest-asyncio>=1.5.0",
+    "ruff>=0.17.5",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.ruff.lint.flake8-bugbear]
+# FastAPI and Typer declare parameters this way on purpose.
+extend-immutable-calls = ["fastapi.Depends", "typer.Option", "typer.Argument"]

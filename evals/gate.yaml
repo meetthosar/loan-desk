@@ -1,0 +1,4 @@
+# Release gate for CI. Set min_pass_rate after the first full run and say why here.
+# Until it is set, `loandesk eval run --gate` reports but never fails.
+min_pass_rate: null
+reason: ""

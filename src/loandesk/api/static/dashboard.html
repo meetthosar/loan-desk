@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LoanDesk · admin</title>
+<style>
+  .viz-root {
+    color-scheme: light;
+    --surface-0: #f4f4f2; --surface-1: #fcfcfb; --border: #e3e2de;
+    --text-primary: #0b0b0b; --text-secondary: #52514e; --text-muted: #6f6e69;
+    --series-1: #2a78d6; --track: #cde2fb;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) .viz-root {
+      color-scheme: dark;
+      --surface-0: #111110; --surface-1: #1a1a19; --border: #2e2d2b;
+      --text-primary: #f0efec; --text-secondary: #c3c2b7; --text-muted: #9a9990;
+      --series-1: #3987e5; --track: #184f95;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .viz-root { background: var(--surface-0); color: var(--text-primary); min-height: 100vh;
+              padding: 24px; }
+  h1 { font-size: 20px; margin: 0 0 4px; } h2 { font-size: 15px; margin: 0 0 12px; }
+  .sub { color: var(--text-secondary); margin: 0 0 20px; }
+  .controls { display: flex; gap: 8px; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
+  input, select, button { font: inherit; padding: 6px 10px; border-radius: 6px;
+    border: 1px solid var(--border); background: var(--surface-1); color: var(--text-primary); }
+  button { cursor: pointer; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px;
+           margin-bottom: 20px; }
+  .tile, .panel { background: var(--surface-1); border: 1px solid var(--border);
+                  border-radius: 10px; padding: 14px 16px; }
+  .tile .label { color: var(--text-secondary); font-size: 13px; }
+  .tile .value { font-size: 28px; font-weight: 600; margin-top: 2px; }
+  .tile .note { color: var(--text-muted); font-size: 12px; }
+  .hero .value { font-size: 48px; }
+  .panels { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px; }
+  .bar-row { display: grid; grid-template-columns: 150px 1fr 48px; gap: 8px; align-items: center;
+             padding: 3px 0; border-radius: 4px; }
+  .bar-row:hover { background: var(--surface-0); }
+  .bar-row .name { color: var(--text-secondary); font-size: 13px; overflow: hidden;
+                   text-overflow: ellipsis; white-space: nowrap; }
+  .bar-row .num { text-align: right; font-variant-numeric: tabular-nums; font-size: 13px; }
+  .track { height: 10px; background: var(--track); border-radius: 4px; overflow: hidden; }
+  .fill { height: 100%; background: var(--series-1); border-radius: 0 4px 4px 0; }
+  .empty, .error { color: var(--text-muted); }
+  .error { color: var(--text-primary); }
+</style>
+</head>
+<body>
+<div class="viz-root">
+  <h1>LoanDesk admin</h1>
+  <p class="sub">Synthetic data. KPIs from logged agent turns.</p>
+  <div class="controls">
+    <input id="token" type="password" placeholder="OIDC access token (blank on localhost)" size="36">
+    <select id="source" aria-label="Source">
+      <option value="">All sources</option><option value="chat">Chat</option>
+      <option value="simulate">Simulated</option><option value="eval">Evals</option>
+    </select>
+    <button id="load">Load</button>
+    <span id="status" class="empty"></span>
+  </div>
+  <div class="tiles" id="tiles"></div>
+  <div class="panels">
+    <div class="panel"><h2>Turns by intent</h2><div id="intents"></div></div>
+    <div class="panel"><h2>Handoffs by reason</h2><div id="reasons"></div></div>
+    <div class="panel"><h2>Guardrail flags</h2><div id="flags"></div></div>
+  </div>
+</div>
+<script>
+const $ = (id) => document.getElementById(id);
+const pct = (x) => (x * 100).toFixed(1) + "%";
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function tile(label, value, note, hero) {
+  return `<div class="tile${hero ? " hero" : ""}"><div class="label">${label}</div>` +
+         `<div class="value">${value}</div>${note ? `<div class="note">${note}</div>` : ""}</div>`;
+}
+
+function bars(el, counts) {
+  const entries = Object.entries(counts || {});
+  if (!entries.length) { el.innerHTML = '<p class="empty">None yet.</p>'; return; }
+  const max = Math.max(...entries.map(([, v]) => v));
+  const total = entries.reduce((a, [, v]) => a + v, 0);
+  el.innerHTML = entries.map(([k, v]) =>
+    `<div class="bar-row" title="${esc(k)}: ${v} (${pct(v / total)})">` +
+    `<span class="name">${esc(k)}</span>` +
+    `<div class="track"><div class="fill" style="width:${(v / max) * 100}%"></div></div>` +
+    `<span class="num">${v}</span></div>`).join("");
+}
+
+async function load() {
+  const token = $("token").value.trim();
+  sessionStorage.setItem("loandesk_token", token);
+  $("status").textContent = "Loading…";
+  const q = $("source").value ? `?source=${$("source").value}` : "";
+  const res = await fetch("/admin/kpis" + q, token ? {headers: {Authorization: `Bearer ${token}`}} : {});
+  if (!res.ok) { $("status").textContent = `Error ${res.status}: ${(await res.json()).detail}`; return; }
+  const k = await res.json();
+  $("status").textContent = "";
+  if (!k.conversations) { $("tiles").innerHTML = '<p class="empty">No conversations logged yet.</p>'; return; }
+  $("tiles").innerHTML = [
+    tile("Containment rate", pct(k.containment_rate), `${k.conversations.toLocaleString()} conversations`, true),
+    tile("Escalation rate", pct(k.escalation_rate), "conversations with a handoff"),
+    tile("Avg handle time", k.avg_handle_time_s + " s", "agent processing per conversation"),
+    tile("Cost per conversation", "$" + k.cost_per_conversation_usd.toFixed(4), "OpenRouter, actual"),
+    tile("p95 latency", (k.p95_latency_ms / 1000).toFixed(2) + " s", `p50 ${(k.p50_latency_ms / 1000).toFixed(2)} s`),
+    tile("Spend so far", "$" + k.spend.total_usd.toFixed(2), `$${k.spend.remaining_usd.toFixed(2)} left of $${k.spend.cap_usd}`),
+  ].join("");
+  bars($("intents"), k.intents);
+  bars($("reasons"), k.handoff_reasons);
+  bars($("flags"), k.guardrail_flags);
+}
+$("token").value = sessionStorage.getItem("loandesk_token") || "";
+$("load").addEventListener("click", load);
+$("source").addEventListener("change", load);
+load();
+</script>
+</body>
+</html>

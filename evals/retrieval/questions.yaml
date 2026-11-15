@@ -1,0 +1,72 @@
+# Labelled retrieval questions for `loandesk experiment stores`.
+# `relevant` lists section ids (<policy file>#<section slug>); a hit counts if any matches.
+- question: Is there any charge if I close my loan early?
+  relevant: [foreclosure#who-can-foreclose, fee-schedule#prepayment-and-foreclosure-charge]
+- question: How is the foreclosure amount worked out?
+  relevant: [foreclosure#how-the-foreclosure-amount-is-calculated]
+- question: How many days is my foreclosure quote valid?
+  relevant: [foreclosure#how-long-a-quote-is-valid]
+- question: When will I get my NOC after closing the loan?
+  relevant: [foreclosure#after-closure]
+- question: Can I pay part of the loan early?
+  relevant: [foreclosure#part-prepayment, interest-and-pricing#paying-early-saves-interest]
+- question: What is the late payment penalty?
+  relevant: [fee-schedule#penal-charges-for-late-payment, failed-payments#what-happens-after-a-failure]
+- question: Do you charge a bounce fee when NACH fails?
+  relevant: [fee-schedule#payment-bounce-charge, failed-payments#what-happens-after-a-failure]
+- question: What is the processing fee?
+  relevant: [fee-schedule#processing-fee]
+- question: Can the late fee be waived?
+  relevant: [fee-schedule#waivers]
+- question: Why did my auto debit fail?
+  relevant: [failed-payments#why-an-auto-debit-fails]
+- question: Money was cut from my bank account but the EMI shows unpaid
+  relevant: [failed-payments#money-debited-but-emi-shows-unpaid]
+- question: My NACH mandate expired, what should I do?
+  relevant: [failed-payments#expired-mandate]
+- question: Will a missed EMI affect my CIBIL score?
+  relevant: [failed-payments#credit-bureau-reporting]
+- question: I cannot pay this month because of a medical emergency
+  relevant: [failed-payments#if-you-cannot-pay, collections-conduct#hardship]
+- question: How can I pay my EMI?
+  relevant: [emi-payments#ways-to-pay]
+- question: My UPI payment is showing pending, should I pay again?
+  relevant: [emi-payments#pending-payments]
+- question: I paid cash to the field officer, how do I get a receipt?
+  relevant: [emi-payments#receipts]
+- question: What day of the month is my EMI due?
+  relevant: [loan-terms#emi-schedule]
+- question: What is the interest rate on my loan?
+  relevant: [interest-and-pricing#interest-rate-range]
+- question: Is interest charged on the full loan amount or reducing balance?
+  relevant: [interest-and-pricing#how-interest-is-calculated]
+- question: What is the maximum loan amount?
+  relevant: [loan-terms#loan-amount-and-tenure]
+- question: Do I need to give any collateral?
+  relevant: [loan-terms#no-collateral]
+- question: The recovery agent came to my house at 9 pm
+  relevant: [collections-conduct#when-staff-may-contact-you]
+- question: The field officer shouted at me in front of my neighbours
+  relevant: [collections-conduct#how-staff-must-behave, collections-conduct#reporting-misconduct]
+- question: How do I complain about a field officer?
+  relevant: [collections-conduct#reporting-misconduct, grievance-redressal#level-1-support-desk]
+- question: My complaint was not resolved, how do I escalate?
+  relevant: [grievance-redressal#level-2-grievance-redressal-officer]
+- question: How do I complain to the RBI ombudsman?
+  relevant: [grievance-redressal#level-3-rbi-ombudsman]
+- question: How do I change my registered mobile number?
+  relevant: [contact-details#phone-number-and-email]
+- question: I lost my old SIM, how do I update my number?
+  relevant: [contact-details#lost-access-to-the-registered-number]
+- question: Someone called asking for my OTP, is that from Udaan?
+  relevant: [contact-details#keep-your-otp-private]
+- question: How do I change my address?
+  relevant: [contact-details#address-and-name-changes]
+- question: How long do you keep my chat messages?
+  relevant: [privacy#chat-messages]
+- question: Do you sell my data?
+  relevant: [privacy#why-we-use-it]
+- question: Mera EMI kab due hai?
+  relevant: [loan-terms#emi-schedule, emi-payments#checking-your-next-due-date]
+- question: Loan jaldi band karne ka charge kitna hai?
+  relevant: [foreclosure#who-can-foreclose, fee-schedule#prepayment-and-foreclosure-charge]
